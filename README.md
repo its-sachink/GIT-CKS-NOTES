@@ -1,2 +1,2 @@
-# GIT-CKS-NOTES-
+# GIT-CKS-NOTES
 Kubernetes Security Certification
