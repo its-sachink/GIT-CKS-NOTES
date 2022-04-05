@@ -1,0 +1,57 @@
+############ Notes - Topic 1 #################
+
+# Intro
+
+- Cluster Setup & Hardening
+
+1) CIS Benchmarks
+2) Authentication
+3) Authorization
+4) Service Accounts
+5) TLS in Kubernetes
+6) Protect node metadata and endpoints
+7) Securing the Kubernetes Dashboard
+8) Verifying Platform Binaries
+9) Upgrade Kubernetes Frequently
+10) Network Policies
+11) Securing Ingress
+
+
+
+############ Notes - Topic 2 #################
+
+# CIS Benchmarks
+
+- Security Benchmark
+    - Root users should be disabled
+    - sudo should be enabled whenever required
+    - Only necessary users should be given sudo priviliedges
+    - configure firewalls on network
+    - only necessary services are enabled on the server
+    - Right permissions are set for files
+    - Auditing and logging are enabled on the servers
+    - upgrade, patch the servers to prevent from the attacks
+
+
+- Tools to access the security
+    - CIS benchmarking tools, Center for Internet Security
+            https://wwww.cisecurity.org/cis-benchmarks
+
+    - CIS-CAT tools : Help in scanning the servers for the benchmarks
+
+
+
+
+
+############ Notes - Topic 3 #################
+
+# CIS Benchmarks for Kubernetes
+
+    - Register to CIS benchmark website and download the best practices for Kubernetes
+
+    - CIS-CAT Pro* includes support for Kubernetes, CIS-CAT does not include that
+
+    
+
+
+

