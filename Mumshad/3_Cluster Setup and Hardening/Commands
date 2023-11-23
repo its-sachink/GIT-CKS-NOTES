@@ -1,2 +1,1148 @@
 ############# Commands - Labs ###############
 
+######### Lab 1 : Run CIS Benchmark Assessment : #######
+
+- Task 3 :
+    
+    # cd /root/Assessor
+    # sh ./Assessor-CLI.sh -i -rd /var/www/html/ -nts -rp index
+
+
+
+######## Reference links ##########
+
+Reference links
+Download the CIS benchmark PDF’s from the below link:
+
+https://www.cisecurity.org/cis-benchmarks/#kubernetes
+
+Go to the `Server Software` section and click on the `Virtualization`. 
+
+There you will see multiple items that fall into the virtualization category such as VMware, docker and kubernetes. Now, move on to the Kubernetes and expand it to see more options then download CIS Kubernetes Benchmark version 1.6.0.
+
+Download the CIS CAT tool’ from the below link: 
+
+https://www.cisecurity.org/cybersecurity-tools/cis-cat-pro/cis-benchmarks-supported-by-cis-cat-pro/
+
+Download the CIS CAT Lite tool from the below link:
+
+https://learn.cisecurity.org/cis-cat-lite
+
+
+
+
+
+######### Lab 2 : Kube bench : #######
+
+- Install kube bench in /root directory, version : v0.4.0
+    - Download file: kube-bench_0.4.0_linux_amd64.tar.gz
+
+    - Download 0.4.0 binary and follow the user guide at 
+        
+    https://github.com/aquasecurity/kube-bench/blob/main/docs/installation.md#download-and-install-binaries
+
+    # curl -L https://github.com/aquasecurity/kube-bench/releases/download/v0.4.0/kube-bench_0.40_linux_amd64.tar.gz -o kube-bench_0.4.0_linux_amd64.tar.gz
+
+    # tar -xvf kube-bench_0.4.0_linux_amd64.tar.gz
+
+
+- Run a kube-bench test now and see the results
+
+    #  ./kube-bench --config-dir `pwd`/cfg --config `pwd`/cfg/config.yaml 
+
+    # ./kube-bench --config-dir `pwd`/cfg --config `pwd`/cfg/config.yaml >> test1.txt
+
+
+- Fix this failed test 1.3.1 Ensure that the --terminated-pod-gc-threshold argument is set as appropriate
+
+    # cat test1.txt | grep -i 1.3.1 -A 3
+[WARN] 1.3.1 Ensure that the --terminated-pod-gc-threshold argument is set as appropriate (Manual)
+[FAIL] 1.3.2 Ensure that the --profiling argument is set to false (Automated)
+[PASS] 1.3.3 Ensure that the --use-service-account-credentials argument is set to true (Automated)
+[PASS] 1.3.4 Ensure that the --service-account-private-key-file argument is set as appropriate (Automated)
+--
+1.3.1 Edit the Controller Manager pod specification file /etc/kubernetes/manifests/kube-controller-manager.yaml
+on the master node and set the --terminated-pod-gc-threshold to an appropriate threshold,
+for example:
+--terminated-pod-gc-threshold=10
+
+
+    # cat /etc/kubernetes/manifests/kube-controller-manager.yaml | grep -i terminated
+    - --terminated-pod-gc-threshold=10
+
+
+
+- Fix this failed test 1.3.6 Ensure that the RotateKubeletServerCertificate argument is set to true
+
+    # cat test1.txt | grep -i 1.3.6 -A 3
+[FAIL] 1.3.6 Ensure that the RotateKubeletServerCertificate argument is set to true (Automated)
+[PASS] 1.3.7 Ensure that the --bind-address argument is set to 127.0.0.1 (Automated)
+[INFO] 1.4 Scheduler
+[FAIL] 1.4.1 Ensure that the --profiling argument is set to false (Automated)
+--
+1.3.6 Edit the Controller Manager pod specification file /etc/kubernetes/manifests/kube-controller-manager.yaml
+on the master node and set the --feature-gates parameter to include RotateKubeletServerCertificate=true.
+--feature-gates=RotateKubeletServerCertificate=true
+
+
+
+
+
+######### Lab 3 : Service Accounts : #######
+
+- How many service accounts exits
+
+    # kubectl get serviceaccounts
+
+
+- What is the secret token used by the default service account?
+
+    # kubectl describe serviceaccount default
+
+
+- Create a new ServiceAccount named dashboard-sa
+
+    # kubectl create serviceaccount dashboard-sa
+
+
+
+- Edit the deployment to change ServiceAccount from default to dashboard-sa.
+
+    # kubectl edit deployment web-dashboard
+        -- Add "serviceAccountName: dashboard-sa" under "spec" section
+
+    OR
+
+    # kubectl set serviceaccount deploy/web-dashboard dashboard-sa
+
+
+
+
+######### Lab 4 : View Certificates : #######
+
+- Identify the certificate file used for the kube-api server
+
+    # cat /etc/kubernetes/manifests/kube-apiserver.yaml | grep -i tls-cert-file
+    - --tls-cert-file=/etc/kubernetes/pki/apiserver.crt
+
+
+
+- Identify the Certificate file used to authenticate kube-apiserver as a client to ETCD Server.
+
+    # cat /etc/kubernetes/manifests/kube-apiserver.yaml | grep -i etcd-certfile
+    - --etcd-certfile=/etc/kubernetes/pki/apiserver-etcd-client.crt
+
+
+
+- Identify the key used to authenticate kubeapi-server to the kubelet server.
+
+    # cat /etc/kubernetes/manifests/kube-apiserver.yaml | grep -i kubelet-client-key
+    - --kubelet-client-key=/etc/kubernetes/pki/apiserver-kubelet-client.key
+
+
+- Identify the ETCD Server Certificate used to host ETCD server.
+
+    # cat /etc/kubernetes/manifests/etcd.yaml | grep -i cert-file
+    - --cert-file=/etc/kubernetes/pki/etcd/server.crt
+    - --peer-cert-file=/etc/kubernetes/pki/etcd/peer.crt
+
+
+
+- Identify the ETCD Server CA Root Certificate used to serve ETCD Server. ETCD can have its own CA. So this may be a different CA certificate than the one used by kube-api server.
+
+    # cat /etc/kubernetes/manifests/etcd.yaml | grep -i trusted-ca-file
+    - --peer-trusted-ca-file=/etc/kubernetes/pki/etcd/ca.crt
+    - --trusted-ca-file=/etc/kubernetes/pki/etcd/ca.crt     <<
+
+
+- What is the Common Name (CN) configured on the Kube API Server Certificate?
+- What is the name of the CA who issued the Kube API Server Certificate?
+- Which of the below alternate names is not configured on the Kube API Server Certificate?
+
+
+    controlplane ~ ➜  cat /etc/kubernetes/manifests/kube-apiserver.yaml | grep -i tls-cert-file
+    - --tls-cert-file=/etc/kubernetes/pki/apiserver.crt
+
+controlplane ~ ➜  openssl x509 -in /etc/kubernetes/pki/apiserver.crt -text
+Certificate:
+    Data:
+        Version: 3 (0x2)
+        Serial Number: 1835135149294101459 (0x1977b5b2008223d3)
+        Signature Algorithm: sha256WithRSAEncryption
+        Issuer: CN = kubernetes                     <<<< name of the CA who issue api certificate
+        Validity
+            Not Before: Nov 19 08:25:27 2023 GMT
+            Not After : Nov 18 08:25:28 2024 GMT
+        Subject: CN = kube-apiserver                <<<< Kube-api server CN name
+        Subject Public Key Info:
+            Public Key Algorithm: rsaEncryption
+        ....
+        ....
+        X509v3 Subject Alternative Name: 
+                DNS:controlplane, DNS:kubernetes, DNS:kubernetes.default, DNS:kubernetes.default.svc, DNS:kubernetes.default.svc.cluster.local, IP Address:10.96.0.1, IP Address:192.11.149.9
+    Signature Algorithm: sha256WithRSAEncryption
+         9c:35:b5:56:25:79:1f:b3:d6:c6:fd:82:d2:c5:f3:6b:e8:6c:
+
+
+
+
+- What is the Common Name (CN) configured on the ETCD Server certificate?
+
+    openssl x509 -in /etc/kubernetes/pki/etcd/server.crt -text | grep -i cn
+        Issuer: CN = etcd-ca
+        Subject: CN = controlplane
+MIIDTzCCAjegAwIBAgIIK9f+CFMkOwowDQYJKoZIhvcNAQELBQAwEjEQMA4GA1UE
+BgNVBAMTDGNvbnRyb2xwbGFuZTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoC
+DQYJKoZIhvcNAQELBQADggEBAH2MyAPeuEENqvsAokW2ZvtAe7E9gZSAAz28mcTi
+
+
+
+
+
+
+- Kubectl suddenly stops responding to your commands. Check it out! Someone recently modified the /etc/kubernetes/manifests/etcd.yaml file
+
+        # cat /etc/kubernetes/manifests/etcd.yaml  | grep -i cert
+            - --cert-file=/etc/kubernetes/pki/etcd/server-certificate.crt
+            - --client-cert-auth=true
+            - --peer-cert-file=/etc/kubernetes/pki/etcd/peer.crt
+            - --peer-client-cert-auth=true
+              name: etcd-certs
+            name: etcd-certs
+
+        # controlplane ~ ➜  ls /etc/kubernetes/pki/etcd/server-certificate.crt
+        ls: cannot access '/etc/kubernetes/pki/etcd/server-certificate.crt': No such file or directory
+
+        # controlplane ~ ✖ ls /etc/kubernetes/pki/etcd/server.
+        server.crt  server.key  
+
+        # cat /etc/kubernetes/manifests/etcd.yaml  | grep -i cert
+            - --cert-file=/etc/kubernetes/pki/etcd/server.crt       <<<<
+            - --client-cert-auth=true
+            - --peer-cert-file=/etc/kubernetes/pki/etcd/peer.crt
+
+
+
+
+
+- The kube-api server stopped again! Check it out. Inspect the kube-api server logs and identify the root cause and fix the issue.
+
+Run crictl ps -a command to identify the kube-api server container. Run crictl logs container-id command to view the logs.
+
+
+    # crictl ps -a | grep -i api
+        df2023c693e4f       6f707f569b572       Less than a second ago   Running             kube-apiserver            0                   ae365b25e089d       kube-apiserver-controlplane
+
+    # crictl logs c98be935b4e5c | grep -i failed
+    Err: connection error: desc = "transport: authentication handshake failed: tls: failed to verify certificate: x509: certificate signed by unknown authority"
+    E1119 09:04:45.733656       1 run.go:74] "command failed" err="context deadline exceeded" <<<<
+    
+    # This indicates an issue with the ETCD CA certificate used by the kube-apiserver. Correct it to use the file /etc/kubernetes/pki/etcd/ca.crt.
+
+
+
+
+
+######### Lab 5 : Certificates API : #######
+
+- task 2 :
+
+    Create a CertificateSigningRequest object with the name akshay with the contents of the akshay.csr file
+
+    As of kubernetes 1.19, the API to use for CSR is certificates.k8s.io/v1.
+
+    Please note that an additional field called signerName should also be added when creating CSR. For client authentication to the API server we will use the built-in signer kubernetes.io/kube-apiserver-client.
+
+    - solution :
+
+        # ls
+        akshay.csr  akshay.key
+
+        # cat akshay.csr | base64 -w 0
+        LS0tLS1CRUdJTiBDRVJUSUZJQ0FURSBSRVFVRVNULS0tLS0KTUlJQ1ZqQ0NBVDRDQVFBd0VURVBNQTBHQTFVRUF3d0dZV3R6YUdGNU1JSUJJakFOQmdrcWhraUc5dzBCQVFFRgpBQU9DQVE4QU1JSUJDZ0tDQVFFQXlaaWtHTHZBNzB0TmNXMnBKeUw5d1hSdFQ3NGxPN2JtY1BycnVJRmY1SzBlCnd5UzNOSFkzMHorM2xVajkzUDAzeEJhTlVkdHV6WGxyb2dGcE05QjlrT0NLN3A3YUVJQ3ZrN0owbitnRG5ld0cKN1hJUTlVUjhlbnpZSTdMVlRpSWN0ZEdwUHdNaUxiRXo3NzNwejltZXFRVS93OThtdVcvU0FkclNVV1hyWXAxcApVK1R4blBVbUh4a0RGTmlqNTd4dXhaV1Zkb3pjU0JkTVhjeldhUHpyaFVQVy81dlY5ZGlHN1ZwRzUyZS9FZ3F1Ci8vUmQzc3FVQW02ZDV2aWZCSWxTYUNRZHYwb1Z0dXpGZUYrVFpFa013VXBHSjFsd1ZPSnNRTTloK29tenNhVlEKZENvZVZQdnRYVzF5OEVhN3hNWE5rYWltd1d3MmQ1d0M1ZVh4bWoydjRRSURBUUFCb0FBd0RRWUpLb1pJaHZjTgpBUUVMQlFBRGdnRUJBREdsNGFybjBDOEI3bWFBSlU2ejBmOTZ1dlZERklmRTJ6VGNwVGVETzV0bVU0TzNNZXR6Cis5YnJRL3NqZEFDSXBxanBkVjd4UEdsK2hrWjY2WWF2d1dMMnN0MW03MGV3aFh5QWZyYk1IcitnK1dBS3ZTWm4KeWk0eENyYm12YXFSVWVpVTJ2UURjN2dQZmlhcWZ1TitROHArQzlNN3Y0VEJtdW5lVnY2SjJTWFJqTWJRbkRhRQp5N3l6OUxHR3Y4ak9WOW9yVTZPWHVpcFZZM2p3bDNSWElDUnk5VEhFcU1iK2htRXN3aDVlVEd2VHl2K2lJbjdhCmtXSU0yNDlKTlkxWDRWTTBPWEFHT2RYVzZHUzZGaVhYTUhHTUw2cWpDaGR2ZW5zN1lZNW1OaldyaTVEa2lwV0sKRnU0bnM0c0lhL3dXdmswY25reHlpb1FoM3kvOGJidVhZbU09Ci0tLS0tRU5EIENFUlRJRklDQVRFIFJFUVVFU1QtLS0tLQo=
+
+        # vim akshay-csr.yaml
+
+        # controlplane ~ ➜  cat akshay-csr.yaml 
+---
+apiVersion: certificates.k8s.io/v1
+kind: CertificateSigningRequest
+metadata:
+  name: akshay
+spec:
+  groups:
+  - system:authenticated
+  request: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURSBSRVFVRVNULS0tLS0KTUlJQ1ZqQ0NBVDRDQVFBd0VURVBNQTBHQTFVRUF3d0dZV3R6YUdGNU1JSUJJakFOQmdrcWhraUc5dzBCQVFFRgpBQU9DQVE4QU1JSUJDZ0tDQVFFQXlaaWtHTHZBNzB0TmNXMnBKeUw5d1hSdFQ3NGxPN2JtY1BycnVJRmY1SzBlCnd5UzNOSFkzMHorM2xVajkzUDAzeEJhTlVkdHV6WGxyb2dGcE05QjlrT0NLN3A3YUVJQ3ZrN0owbitnRG5ld0cKN1hJUTlVUjhlbnpZSTdMVlRpSWN0ZEdwUHdNaUxiRXo3NzNwejltZXFRVS93OThtdVcvU0FkclNVV1hyWXAxcApVK1R4blBVbUh4a0RGTmlqNTd4dXhaV1Zkb3pjU0JkTVhjeldhUHpyaFVQVy81dlY5ZGlHN1ZwRzUyZS9FZ3F1Ci8vUmQzc3FVQW02ZDV2aWZCSWxTYUNRZHYwb1Z0dXpGZUYrVFpFa013VXBHSjFsd1ZPSnNRTTloK29tenNhVlEKZENvZVZQdnRYVzF5OEVhN3hNWE5rYWltd1d3MmQ1d0M1ZVh4bWoydjRRSURBUUFCb0FBd0RRWUpLb1pJaHZjTgpBUUVMQlFBRGdnRUJBREdsNGFybjBDOEI3bWFBSlU2ejBmOTZ1dlZERklmRTJ6VGNwVGVETzV0bVU0TzNNZXR6Cis5YnJRL3NqZEFDSXBxanBkVjd4UEdsK2hrWjY2WWF2d1dMMnN0MW03MGV3aFh5QWZyYk1IcitnK1dBS3ZTWm4KeWk0eENyYm12YXFSVWVpVTJ2UURjN2dQZmlhcWZ1TitROHArQzlNN3Y0VEJtdW5lVnY2SjJTWFJqTWJRbkRhRQp5N3l6OUxHR3Y4ak9WOW9yVTZPWHVpcFZZM2p3bDNSWElDUnk5VEhFcU1iK2htRXN3aDVlVEd2VHl2K2lJbjdhCmtXSU0yNDlKTlkxWDRWTTBPWEFHT2RYVzZHUzZGaVhYTUhHTUw2cWpDaGR2ZW5zN1lZNW1OaldyaTVEa2lwV0sKRnU0bnM0c0lhL3dXdmswY25reHlpb1FoM3kvOGJidVhZbU09Ci0tLS0tRU5EIENFUlRJRklDQVRFIFJFUVVFU1QtLS0tLQo=
+  signerName: kubernetes.io/kube-apiserver-client
+  usages:
+  - client auth
+
+
+    # kubectl apply -f akshay-csr.yaml 
+    certificatesigningrequest.certificates.k8s.io/akshay created
+
+    # kubectl get csr
+    NAME        AGE   SIGNERNAME                                    REQUESTOR                  REQUESTEDDURATION   CONDITION
+    akshay      56s   kubernetes.io/kube-apiserver-client           kubernetes-admin           <none>              Pending
+
+    # kubectl certificate approve akshay
+    certificatesigningrequest.certificates.k8s.io/akshay approved
+
+
+
+
+- task 7 :
+
+    Hmmm.. You are not aware of a request coming in. What groups is this CSR requesting access to?
+    Check the details about the request. Preferebly in YAML.
+
+    # kubectl get csr agent-smith -o yaml
+apiVersion: certificates.k8s.io/v1
+kind: CertificateSigningRequest
+metadata:
+  creationTimestamp: "2023-11-19T09:38:31Z"
+  name: agent-smith
+  resourceVersion: "2915"
+  uid: f2d26138-8a34-4c6d-90bf-619afbfb3c59
+spec:
+  groups:
+  - system:masters          <<<< groups
+  - system:authenticated
+
+
+- task 8
+
+    That doesn't look very right. Reject that request.
+
+    # kubectl certificate deny agent-smith
+    certificatesigningrequest.certificates.k8s.io/agent-smith denied
+
+
+- task 9
+
+    Let's get rid of it. Delete the new CSR object
+
+    # kubectl delete csr agent-smith
+    certificatesigningrequest.certificates.k8s.io "agent-smith" deleted
+
+
+
+
+
+
+######### Lab 6 : kube-config #######
+
+- How many clusters are defined in the default kubeconfig file?
+
+    # kubectl config view
+apiVersion: v1
+clusters:
+- cluster:
+    certificate-authority-data: DATA+OMITTED
+    server: https://controlplane:6443
+  name: kubernetes
+contexts:
+- context:
+    cluster: kubernetes
+    user: kubernetes-admin
+  name: kubernetes-admin@kubernetes
+current-context: kubernetes-admin@kubernetes
+kind: Config
+preferences: {}
+users:
+- name: kubernetes-admin
+  user:
+    client-certificate-data: DATA+OMITTED
+    client-key-data: DATA+OMITTED
+
+
+
+
+- A new kubeconfig file named my-kube-config is created. It is placed in the /root directory. How many clusters are defined in that kubeconfig file?
+
+    # kubectl config view --kubeconfig my-kube-config
+    kubectl config view --kubeconfig my-kube-config 
+apiVersion: v1
+clusters:
+- cluster:
+    certificate-authority: /etc/kubernetes/pki/ca.crt
+    server: https://controlplane:6443
+  name: development
+- cluster:
+    certificate-authority: /etc/kubernetes/pki/ca.crt
+    server: https://controlplane:6443
+    ...
+    ...
+
+
+
+
+- I would like to use the dev-user to access test-cluster-1. Set the current context to the right one so I can do that.
+Once the right context is identified, use the kubectl config use-context command.
+
+    # kubectl config --kubeconfig=/root/my-kube-config use-context research
+    Switched to context "research".
+
+    # kubectl config --kubeconfig=/root/my-kube-config current-context
+    research
+
+
+
+- We don't want to have to specify the kubeconfig file option on each command. Make the my-kube-config file the default kubeconfig.
+
+    # mv my-kube-config /root/.kube/config
+
+
+
+
+
+- With the current-context set to research, we are trying to access the cluster. However something seems to be wrong. Identify and fix the issue.
+
+Try running the kubectl get pods command and look for the error. All users certificates are stored at /etc/kubernetes/pki/users.
+
+
+
+
+######### Lab 7 : RBAC #######
+
+
+- Inspect the environment and identify the authorization modes configured on the cluster.
+    Check the kube-apiserver settings.
+
+    # kubectl get pods -n kube-system
+NAME                                   READY   STATUS    RESTARTS   AGE
+coredns-5d78c9869d-clkg2               1/1     Running   0          5m41s
+coredns-5d78c9869d-flzn4               1/1     Running   0          5m41s
+etcd-controlplane                      1/1     Running   0          5m53s
+kube-apiserver-controlplane            1/1     Running   0          5m55s
+kube-controller-manager-controlplane   1/1     Running   0          5m53s
+kube-proxy-hp8n5                       1/1     Running   0          5m41s
+kube-scheduler-controlplane            1/1     Running   0          5m53s
+
+    # kubectl describe pod -n kube-system kube-apiserver-controlplane | grep -i authorization
+    --authorization-mode=Node,RBAC
+
+
+- How many roles exist in the default namespace?
+
+    # kubectl get roles -n default
+
+
+- How many roles exist in all namespaces together?
+
+    # kubectl get roles --all-namespaces | wc -l
+
+
+
+- kubectl get roles --all-namespaces | wc -l
+
+    # kubectl describe role kube-proxy -n kube-system
+Name:         kube-proxy
+Labels:       <none>
+Annotations:  <none>
+PolicyRule:
+  Resources   Non-Resource URLs  Resource Names  Verbs
+  ---------   -----------------  --------------  -----
+  configmaps  []                 [kube-proxy]    [get]
+
+
+
+
+- Which account is the kube-proxy role assigned to?
+
+    # kubectl describe rolebinding -n kube-system kube-proxy
+Name:         kube-proxy
+Labels:       <none>
+Annotations:  <none>
+Role:
+  Kind:  Role
+  Name:  kube-proxy
+Subjects:
+  Kind   Name                                             Namespace
+  ----   ----                                             ---------
+  Group  system:bootstrappers:kubeadm:default-node-token 
+
+
+
+- A user dev-user is created. User's details have been added to the kubeconfig file. Inspect the permissions granted to the user. Check if the user can list pods in the default namespace.
+Use the --as dev-user option with kubectl to run commands as the dev-user
+
+    # kubectl get pods --as dev-user
+
+
+
+
+- Create the necessary roles and role bindings required for the dev-user to create, list and delete pods in the default namespace.
+
+    # kubectl create role developer --namespace=default --verb=list,create,delete --resource=pods
+
+    # kubectl create rolebinding dev-user-binding --namespace=default --role=developer --user=dev-user
+
+
+
+
+- Create the necessary roles and role bindings required for the dev-user to create, list and delete pods in the default namespace.
+
+    # kubectl get pod dark-blue-app -n blue --as dev-user
+Error from server (Forbidden): pods "dark-blue-app" is forbidden: User "dev-user" cannot get resource "pods" in API group "" in the namespace "blue"
+
+    # kubectl get role -n blue
+    NAME        CREATED AT
+    developer   2023-11-19T09:53:25Z
+
+    # kubectl edit role developer -n blue
+
+    apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  creationTimestamp: "2023-11-19T09:53:25Z"
+  name: developer
+  namespace: blue
+  resourceVersion: "2338"
+  uid: f08ff9e7-556f-47bd-ba98-30a30d5db170
+rules:
+- apiGroups:
+  - ""
+  resourceNames:
+  - dark-blue-app               <<< make this to dark-blue-app
+  resources:
+
+
+
+
+
+
+- Add a new rule in the existing role developer to grant the dev-user permissions to create deployments in the blue namespace.
+Remember to add api group "apps".
+
+    # kubectl edit role developer -n blue
+
+    Add below line
+
+    - apiGroups:
+      - apps
+      resources:
+      - deployments
+      verbs:
+      - create
+
+
+
+
+
+######### Lab 8 : Cluster Roles and Role Bindings #######
+
+
+- How many ClusterRoles do you see defined in the cluster?
+
+    # kubectl get clusterroles | wc -l
+
+
+- How many ClusterRoleBindings exist on the cluster?
+
+    # kubectl get clusterrolebindings | wc -l
+
+
+
+- What namespace is the cluster-admin clusterrole part of?
+
+    ClusterRole is a non-namespaced resource. You can check via the below command.
+    
+        # kubectl api-resources --namespaced=false
+
+
+
+- What user/groups are the cluster-admin role bound to?
+
+    # kubectl describe clusterrolebinding cluster-admin
+
+
+- What level of permission does the cluster-admin role grant?
+
+    # kubectl describe clusterrole cluster-admin
+
+    kubectl describe clusterrole cluster-admin
+Name:         cluster-admin
+Labels:       kubernetes.io/bootstrapping=rbac-defaults
+Annotations:  rbac.authorization.kubernetes.io/autoupdate: true
+PolicyRule:
+  Resources  Non-Resource URLs  Resource Names  Verbs
+  ---------  -----------------  --------------  -----
+  *.*        []                 []              [*]
+             [*]                []              [*]
+
+
+
+- A new user michelle joined the team. She will be focusing on the nodes in the cluster. Create the required ClusterRoles and ClusterRoleBindings so she gets access to the nodes.
+
+    # kubectl create clusterrole node-admin --verb=get,list,watch,create,delete --resource=nodes --dry-run=client -o yaml >> clusterrole.yaml
+
+    # vim clusterrole.yaml
+
+    # kubectl create clusterrolebinding michelle-binding --clusterrole=node-admin --user=michelle --dry-run=client -o yaml > clusterrolebinding.yaml
+
+    # vim clusterrolebinding.yaml
+
+
+
+
+- michelle's responsibilities are growing and now she will be responsible for storage as well. Create the required ClusterRoles and ClusterRoleBindings to allow her access to Storage.
+
+    - Get the API groups and resource names from the below command.
+
+        # kubectl api-resources
+
+        # kubectl create clusterrole storage-admin --verb=get,watch,list,create,delete --resource=persistentvolumes,storageclasses --dry-run=client -o yaml > storage-admin.yaml
+
+        # vim storage-admin.yaml
+
+        # kubectl create -f storage-admin.yaml
+
+        # kubectl create clusterrolebinding michelle-storage-admin --clusterrole=storage-admin --user=michelle --dry-run=client -o yaml > storageclusterrolebinding.yaml
+
+        # vim storageclusterrolebinding.yaml
+
+        # kubectl apply -f storageclusterrolebinding.yaml
+
+
+
+
+########## Lab 9 : Kubelet Security ###########
+
+-   Which of the following files contain the kubelet configuration?
+
+    # ps -ef | grep /usr/bin/kubelet | grep -i config
+
+    # ps -eaf | grep -i kubelet | grep -i config
+root        7138       1  0 08:53 ?        00:00:02 /usr/bin/kubelet --bootstrap-kubeconfig=/etc/kubernetes/bootstrap-kubelet.conf --kubeconfig=/etc/kubernetes/kubelet.conf --config=/var/lib/kubelet/config.yaml
+
+    # /var/lib/kubelet/config.yaml
+
+
+- What is the value set for the rotateCertificates property for the kubelet?
+
+    # cat /var/lib/kubelet/config.yaml | grep -i rotate
+    rotateCertificates: true
+
+
+
+
+- Set the authorization mode to Webhook and restart kubelet.
+Then call the Pods API again using the command curl -sk https://localhost:10250/pods
+
+    - Set /var/lib/kubelet/config.yaml as below
+
+    authorization:
+        mode: Webhook
+
+    # systemctl restart kubelet.service
+
+    # curl -sk https://localhost:10250/pods
+
+
+- let's disable anonymous authentication mode. Once done, check again using the command curl -sk https://localhost:10250/pods
+
+    Set /var/lib/kubelet/config.yaml
+
+    authentication:
+        anonymous:
+            enabled: false
+
+    # systemctl restart kubelet.service
+
+    # curl -sk https://localhost:10250/pods
+
+
+
+- Disable metrics endpoint on readOnlyPort.
+    After disabling check the metrics API again and verify that it does not display any results. Command: curl -sk http://localhost:10255/metrics
+
+
+    - Set readOnlyPort as 0 in /var/lib/kubelet/config.yaml
+        readOnlyPort: 0
+
+    # systemctl restart kubelet.service
+
+    # curl -sk http://localhost:10255/metrics
+
+
+
+########## Lab 10 : Kubectl Proxy & Port Forward ###########
+
+- While connecting to the kube-apiserver using curl, we get a Forbidden error.
+    curl -k https://localhost:6443
+
+    # curl -k https://localhost:6443 --key /etc/kubernetes/pki/apiserver-kubelet-client.key --cert /etc/kubernetes/pki/apiserver-kubelet-client.crt
+
+
+- start the kubectl proxy on the controlplane node.
+
+    # kubectl proxy &
+
+
+- Call the API endpoint /version of kubectl proxy using curl and redirect the output to the file: /root/kube-proxy-version.json
+
+    # curl 127.0.0.1:8001/version > /root/kube-proxy-version.json
+
+
+- The kubectl proxy is running on the port 8001 by default. However, in some situations, this port may be used by another process in system. Let's fix that.
+
+    Run the kubectl proxy in the background on port 8002 instead.
+
+    # kubectl proxy --port 8002 &
+
+
+- Which command can forward a local port to a port on the Pod ?
+
+    # kubectl port-forward
+
+
+- What is the command to forward port 8000 on the host to port 5000 on the pod app ?
+
+    # kubectl port-forward pod/app 8000:5000
+
+
+- We deployed nginx app in default namespace. Wait few seconds for pod to spinup.
+
+    Forward port 8005 of localhost to port 80 of nginx pods. Run port-forward process in background.
+    Try accessing port 8005 after port forwarding.
+
+    # kubectl get all
+
+    # kubectl port-forward pods/nginx-cbdccf466-8qcr2 8005:80 &
+
+    OR
+
+    # kubectl port-forward deployment/{DEPLOYMENT_NAME} 8005:80 &
+
+    OR 
+
+    # kubectl port-forward service/{SERVICE_NAME} 8005:80 &
+
+    OR
+
+    # kubectl port-forward replicaset/{REPLICASET_NAME} 8005:80 &
+
+
+    # curl localhost:8005
+
+
+- Summary
+
+    kubectl proxy - Opens proxy port to API server
+
+    kubectl port-forward - Opens port to target deployment pods
+
+
+
+########## Kubernetes Dashboard Reference links ###########
+
+Below are some references:
+
+https://redlock.io/blog/cryptojacking-tesla
+
+https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard/
+
+https://github.com/kubernetes/dashboard
+
+https://www.youtube.com/watch?v=od8TnIvuADg 
+
+https://blog.heptio.com/on-securing-the-kubernetes-dashboard-16b09b1b7aca
+
+https://github.com/kubernetes/dashboard/blob/master/docs/user/access-control/creating-sample-user.md
+
+
+
+
+
+########## Lab 12 : Secure Kubernetes Dashboard ###########
+
+- Install Kubernetes dashboard following the installing guides in the Kubernetes documentation site.
+
+    # kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.7.0/aio/deploy/recommended.yaml
+
+
+    - Now run kubectl proxy with the command kubectl proxy --address=0.0.0.0 --disable-filter &
+
+        Click on Kubernetes API tab which is available at top right on the terminal and you will see API endpoints.
+
+        Append /api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/#/login to URL to check login UI
+
+
+        Note: From a security perspective do not use --disable-filter option as it can leave you vulnerable to XSRF attacks, when used with an accessible port. We have used this option to make our lab environment work with the kubernetes dashboard so you can access it through a browser. Ideally you would be accessing it through a kubectl proxy on your localhost only.
+
+        So in actual environments do not use --disable-filter option as its a major security risk.
+
+
+
+- Get the token of admin-user and login into UI. Check whether you can modify any of resources
+
+    # kubectl get secrets -n kubernetes-dashboard admin-user -o go-template="{{.data.token | base64decode}}"
+
+
+
+- As you can see the admin-user is way too powerful. Let's now create a new Service Account readonly-user in the kubernetes-dashboard namespace with view permissions to all resources in all namespaces.
+
+    ClusterRole name : view
+    ClusterRoleBinding name :readonly-user-binding
+
+    # kubectl create sa readonly-user -n kubernetes-dashboard --dry-run=client -o yaml > readonly-user.yaml
+
+    # kubectl create -f readonly-user.yaml
+
+    # kubectl create clusterrolebinding readonly-user-binding --serviceaccount=kubernetes-dashboard --namespace=kubernetes-dashboard --clusterrole=view --dry-run=client -o yaml > readonly-clusterrole.yaml
+    error: serviceaccount must be <namespace>:<name>    <<<< ****
+
+    # kubectl create clusterrolebinding readonly-user-binding --serviceaccount=kubernetes-dashboard:readonly-user --namespace=kubernetes-dashboard --clusterrole=view --dry-run=client -o yaml > readonly-clusterrole.yaml
+
+    # kubectl apply -f readonly-clusterrole.yaml
+
+
+
+
+- Logout the admin-user from the Kubernetes Dashboard UI.
+And get the token from the secret called readonly-user we created just now and login into UI.
+
+    Check whether you can modify any of the resources.
+
+    Run the below command to get the token: -
+
+    # kubectl -n kubernetes-dashboard get secret readonly-user -o go-template="{{.data.token | base64decode}}"
+
+
+
+
+- The readonly-user service account has too few privileges. Now let's create a dashboard-admin service account with access to the kubernetes-dashboard namespace only.
+
+    Also, create a new secret called dashboard-admin-secret in the same namespace using the given YAML file /root/dashboard-admin-secret.yaml. It will create token credentials for the service account.
+
+    Use admin ClusterRole with RoleBinding so that it gives full control over every resource in the role binding's namespace, including the namespace itself.
+
+    Also assign list-namespace ClusterRole to only see namespaces.
+
+    Please use below names for bindings
+
+        RoleBinding name: dashboard-admin-binding
+
+        ClusterRoleBinding name: dashboard-admin-list-namespace-binding
+
+
+    ----- solution -----
+
+    # kubectl create sa dashboard-admin --namespace=kubernetes-dashboard --dry-run=client -o yaml > t1.yaml
+
+    # kubectl apply -f t1.yaml
+
+    -------- # admin RoleBinding --------
+    # kubectl create rolebinding dashboard-admin-binding --namespace=kubernetes-dashboard --clusterrole=admin --serviceaccount=dashboard-admin:kubernetes-dashboard --dry-run=client -o yaml > t2.txt
+
+    # kubectl apply t1.yaml
+
+
+    -------- ## list-namespace ClusterRoleBinding ---------
+
+
+
+
+- Get the token of dashboard-admin service account and login into UI. Confirm dashboard-admin can update/manage resources in the kubernetes-dashboard namespace only.
+
+
+
+
+
+
+########## Lab 13 : Verify platform binaries ###########
+
+- Download Kubernetes source code binary for version v1.27.0 and place it in the directory - /opt/
+
+    # wget -O /opt/kubernetes.tar.gz https://dl.k8s.io/v1.27.0/kubernetes.tar.gz
+
+
+- What are first 10 characters of the shasum of previously downloaded file?
+
+    # shasum -a512 /opt/kubernetes.tar.gz
+
+- Which file inside /opt/downloads is correct binary of v1.27.0?
+
+    # shasum -a512 /opt/downloads/kubernetes1.tar.gz
+
+
+- Now lets see how shasum changes if we decompress and compress the same package with some modification
+
+    cd /opt/
+    tar -xf kubernetes.tar.gz
+    cd kubernetes
+    echo "v1.27.0-modified" > version
+    cd ..
+    tar -czf kubernetes-modified.tar.gz kubernetes
+    shasum -a512 kubernetes-modified.tar.gz
+
+
+- Reference links
+Below are some references:
+
+https://kubernetes.io/docs/setup/release/notes
+
+# They moved release notes to their own Kubernetes GitHub repository.
+
+https://github.com/kubernetes/kubernetes/tree/master/CHANGELOG
+
+
+
+
+
+
+############ Kubernetes software version #############
+
+Reference links
+Below are some references:
+
+https://github.com/kubernetes/kubernetes/releases
+
+https://github.com/kubernetes/design-proposals-archive/blob/main/release/versioning.md
+
+https://github.com/kubernetes/design-proposals-archive/blob/main/api-machinery/api-group.md
+
+https://blog.risingstack.com/the-history-of-kubernetes/
+
+https://kubernetes.io/docs/setup/version-skew-policy
+
+
+
+
+
+########## Lab 14 : Cluster upgrade process ###########
+
+
+
+
+
+
+
+
+
+
+
+########## Lab 15 : Network Policy ###########
+
+- How many network policies do you see in the environment?
+
+    # kubectl get networkpolicy
+
+    OR
+
+    # kubectl get netpol
+
+
+
+
+- Create a network policy to allow traffic from the Internal application only to the payroll-service and db-service.
+    Use the spec given below. You might want to enable ingress traffic to the pod to test your rules in the UI.
+
+    Policy Name: internal-policy
+    Policy Type: Egress
+
+
+    # kubectl get netpol payroll-policy -o yaml >> internal-policy.yaml
+
+    # vim internal-policy.yaml
+
+    --------------------
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: internal-policy
+  namespace: default
+spec:
+  podSelector:
+    matchLabels:
+      name: internal
+  policyTypes:
+  - Egress
+  - Ingress
+  ingress:
+    - {}
+  egress:
+  - to:
+    - podSelector:
+        matchLabels:
+          name: mysql
+    ports:
+    - protocol: TCP
+      port: 3306
+
+  - to:
+    - podSelector:
+        matchLabels:
+          name: payroll
+    ports:
+    - protocol: TCP
+      port: 8080
+
+  - ports:
+    - port: 53
+      protocol: UDP
+    - port: 53
+      protocol: TCP
+------------------------------
+
+    # kubectl apply -f internal-policy.yaml 
+    networkpolicy.networking.k8s.io/internal-policy created
+
+
+    Note: We have also allowed Egress traffic to TCP and UDP port. This has been added to ensure that the internal DNS resolution works from the internal pod.
+
+    Remember: The kube-dns service is exposed on port 53:
+
+    root@controlplane:~> kubectl get svc -n kube-system 
+    NAME       TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)                  AGE
+    kube-dns   ClusterIP   10.96.0.10   <none>        53/UDP,53/TCP,9153/TCP   18m
+
+
+
+
+
+########## Lab 16 : Ingress - 1 ###########
+
+- Which namespace is the Ingress Controller deployed in?
+
+    # kubectl get all -A | grep -i controller | grep -i ingress -C 3
+
+
+- Which namespace is the Ingress Resource deployed in?
+
+    # kubectl get ingress --all-namespaces
+    NAMESPACE   NAME                 CLASS    HOSTS   ADDRESS         PORTS   AGE
+    app-space   ingress-wear-watch   <none>   *       10.110.159.27   80      4m22s
+
+
+
+- What is the Host configured on the Ingress Resource?
+    The host entry defines the domain name that users use to reach the application like www.google.com
+
+    - Run the command: kubectl describe ingress --namespace app-space and look at Host under the Rules section.
+
+
+    # kubectl describe ingress ingress-wear-watch -n app-space
+Name:             ingress-wear-watch
+Labels:           <none>
+Namespace:        app-space
+Address:          10.110.159.27
+Ingress Class:    <none>
+Default backend:  <default>
+Rules:
+  Host        Path  Backends
+  ----        ----  --------
+  *           
+              /wear    wear-service:8080 (10.244.0.4:8080)
+              /watch   video-service:8080 (10.244.0.5:8080)
+Annotations:  nginx.ingress.kubernetes.io/rewrite-target: /
+              nginx.ingress.kubernetes.io/ssl-redirect: false 
+
+
+    
+
+
+
+- You are requested to change the URLs at which the applications are made available.
+    Make the video application available at /stream.
+
+    # kubectl edit ingress --namespace app-space
+
+    make /watch to /stream
+
+
+
+
+- A new payment service has been introduced. Since it is critical, the new application is deployed in its own namespace.
+    Identify the namespace in which the new application is deployed.
+
+    # kubectl get deploy --all-namespaces
+
+
+
+
+- You are requested to make the new application available at /pay.
+
+Identify and implement the best approach to making this application available on the ingress controller and test to make sure its working. Look into annotations: rewrite-target as well.
+
+
+    # kubectl get ingress ingress-wear-watch -n app-space -o yaml >> critical-space.yaml
+
+    # vim critical-space.yaml
+----------
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: critical-pay
+  namespace: critical-space
+spec:
+  rules:
+  - http:
+      paths:
+      - backend:
+          service:
+            name: pay-service
+            port:
+              number: 8282
+        path: /pay
+        pathType: Prefix
+status:
+  loadBalancer:
+    ingress:
+    - ip: 10.110.159.27
+-------------
+
+
+
+
+
+
+
+
+########## Lab 16 : Ingress - 2 ###########
+
+- Create the ingress resource to make the applications available at /wear and /watch on the Ingress service.
+    Also, make use of rewrite-target annotation field: -
+
+        # nginx.ingress.kubernetes.io/rewrite-target: /
+
+    Ingress resource comes under the namespace scoped, so don't forget to create the ingress in the app-space namespace.
+
+
+
+    # kubectl create ingress ingress-wear-watch --rule="/wear*=wear-service:8080" --rule="/watch*=video-service:8080" --annotation nginx.ingress.kubernetes.io/rewrite-target=/ --annotation nginx.ingress.kubernetes.io/ssl-redirect="false" -n app-space --dry-run=client -o yaml >> ingress-resource.yaml
+
+# cat ingress-resource.yaml 
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+  creationTimestamp: null
+  name: ingress-wear-watch
+  namespace: app-space
+spec:
+  rules:
+  - http:
+      paths:
+      - backend:
+          service:
+            name: wear-service
+            port:
+              number: 8080
+        path: /wear
+        pathType: Prefix
+      - backend:
+          service:
+            name: video-service
+            port:
+              number: 8080
+        path: /watch
+        pathType: Prefix
+status:
+  loadBalancer: {}
+
+
+
