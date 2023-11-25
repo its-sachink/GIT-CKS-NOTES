@@ -47,6 +47,40 @@
 
 
 
+## Chatper 4 : SSH Hardening :
+</br>
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/297be991-ccab-4200-9b84-432cb05825c6)
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/741d4c8e-53ba-46b3-9231-897433f4247b)
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/e17042c2-0428-4488-88b1-987c5b156f80)
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/003d1e70-4616-4cab-b629-2a35d73a790e)
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/73ec604f-66f0-43ee-87a1-c2ab808278b6)
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/fb86d246-56be-4f73-ba40-27178efafa11)
+</br>
+</br>
+
+### Reference links </br>
+Download the CIS benchmark PDF’s from the below link:
+
+https://www.cisecurity.org/cis-benchmarks/
+
+Go to the `Operating Systems` section and search for the `Distribution Independent Linux`. Expand it to see more options then download CIS Benchmark.
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
