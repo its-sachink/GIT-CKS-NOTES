@@ -192,6 +192,54 @@ https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-ku
 - OR instead of using these tools you can use linux IPTABLES, UFW tools to apply these policies on the network devices.
 
 
+### Minimize external access to the network :
+</br>
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/15b0fcc7-f959-4003-a988-86237f106b57)
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/450ab11e-87bb-4a4c-937d-17c338b18f5b)
+
+</br>
+- We can make use of internal packet filtering system in the linux kernel called netfilter. One of the common command line interface to use with the netfilter is IPTABLES. OR you can use the UFW as well.
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/c44228ac-3fea-43eb-8480-307ce2f5bc6d)
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/133b49d7-5f6e-421c-8dbd-8206a684f92c)
+
+- Install the UFW pacakage.
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/8a5fc2e7-b42a-4020-8c45-e898be4f6fb3)
+
+</br>
+
+- Add the UFW Rules.
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/c1fd3231-3842-4fe4-8df8-fe90d73d09dd)
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/2a9d7fe9-95ee-4f47-82e8-e6c316c52ad4)
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/b35cad28-0c6c-4d79-b457-053e0b2cfa47)
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/e7cf9eaf-8c8b-4b76-8343-222716386767)
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/b619aa85-83e3-4e1a-a1d7-284bf85300e0)
+
+
+
+
+
+
+
+
+ 
+
+ 
+
+
+
+
+
+
 
 
 
