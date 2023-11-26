@@ -304,10 +304,183 @@ https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-ku
 
   ![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/a6841dfa-5f9c-40e5-acc8-fd7a5a9bc2e8)
 
+</br>
+</br>
+</br>
  
   
 ### Restrict syscalls using seccomp :
 </br>
+
+- We will see how to allow programs to only make syscalls that they absolutely need.
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/3b9e5625-a36e-45d9-bff7-b99ec1916c7b)
+
+- Currently there 435 syscalls in linux, all of them can be used by application running in user space, however not all application require access to these many syscals.
+- 
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/b99a3d98-a7bf-4d8d-b741-26919f4668a3)
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/154a8fbe-c3c3-42db-93eb-c7014445c64d)
+
+</br>
+</br>
+
+- How do we restrict applications running on Host/container to only use syscalls that they need access to actually perform there jobs.
+- By default all syscalls invoke is allowed, increasing the attack surface.
+
+</br>
+- This is where we can use SecComp : Secure computing, it is a linux kernel level feature that can be used to sandbox applications to only use the syscalls that they actually need.
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/971cd493-a9f3-4d7c-8895-8d6fe7ecfa5a)
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/e0c02a98-291c-4575-9bb3-883270bdae36)
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/86d0b5b7-9804-4d21-a012-bd86aa98a9fb)
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/6120e947-e6a8-4092-8e88-218b8f21645d)
+
+- Docker has a build-in seccomp filter that it uses by default whenever we create a container, provided that the host kernel is SecComp enabled.
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/c680effd-b013-4641-be08-dc17e47d3b50)
+
+- White list profile SecComp :White list selective SecComp and block are the remaining.
+- 
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/4ba98219-1b9c-4239-ac8e-e3e542ee19d9)
+
+</br>
+- Black list profile SecComp : allow every syscall and reject the selective syscalls. They are easier to create.
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/efa3f849-f765-473a-8642-f79457f32662)
+
+</br>
+
+- Default Docker SecComp profile blocks around 60 of the 300 syscalls on the x86 architecture.
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/8586c97a-92bd-4e86-a1c5-dce8136f2814)
+
+</br>
+- Use the Custom SecComp profile.
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/b479458c-44ca-4f8e-8a5d-84e39bda200b)
+
+</br>
+- Disable using SecComp completely by using `--security-opt seccomp=unconfined`
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/ca725f93-48c4-4de6-ad0f-91b43709298c)
+
+</br>
+</br>
+</br>
+### Implement Seccomp in Kubernetes :
+</br>
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/c0b75ce1-0979-46fb-b234-eddf8d57251f)
+
+</br>
+- Docker blocks around 60 SysCalls calls in there default SecComp profile. You can test this by running a simple tool "amicontained".
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/e5a381e6-bbe8-4cf5-983d-3d1e9aaf1774)
+
+</br>
+- Now lets run the same image in the kubernetes Pod.
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/5839548c-e4ea-4eb3-9751-f1fdc05183da)
+
+- Kubernetes does not use the SecComp profile by default
+
+</br>
+
+- How to implement/apply SecComp in the Kubernetes environment.
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/8b5757de-6d89-4038-a5e0-ae97f455666d)
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/919e8d6c-0f2b-4180-8210-0ca14bbc9ef0)
+
+
+- How to apply custom SecComp profile.
+- The profile file should be under /var/lib/kubelet/seccomp/profiles directory
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/d5763b65-a078-4c52-8190-c764de34b442)
+
+</br>
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/df73fc94-bd49-4f25-b424-343673ec381a)
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/992cfde4-e3e0-43f0-9fc9-8c80ea59d775)
+
+</br>
+- How to map the syscall number to the action it is performing.
+- Check the mapping in the directory "/usr/include/asm/uninstd_64.h
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/10d155a9-eccb-40cf-a1b2-77c2e745d1c0)
+
+</br>
+- We can also make use of the tracee tools to analyse the syscalls made by the containers.
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/9dfa1891-8b34-465d-a10e-d373aeb2f375)
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/27b05ca1-afee-48f1-8214-952f51ebfcee)
+
+</br>
+- Profile to reject all syscalls made by the containers. Set the default action to SCMP_ACT_ERRNO.
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/ae474150-eb21-488c-9e23-d50798fb0ae7)
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/3738b812-44e5-44fd-820d-805a9a198f16)
+
+</br>
+- To make use of the custom profile, place the JSON file inside the same directory. This custom profile file can be created after testing what all syscalls
+our application makes.
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/3d93527d-a008-4b33-a391-e9445f50678d)
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/871f9213-6aac-406c-b3ae-160bb579c7a7)
+
+</br>
+- Exam Tip : They might not ask to create a custom SecComp profile, however they will ask to copy the custom SecComp profile to the default SecComp location to the all nodes of the kubernetes cluster.
+- An then use it to create the Pods.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
   
