@@ -129,6 +129,7 @@ Go to the `Operating Systems` section and search for the `Distribution Independe
 ![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/4a3aed69-b3b2-4abd-a839-447593b82d9b)
 
 ![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/63c48fe1-d226-4f4a-8d02-94dabdd4a7ba)
+
 </br>
 </br>
 
