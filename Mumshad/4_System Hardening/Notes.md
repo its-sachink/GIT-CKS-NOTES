@@ -153,6 +153,60 @@ https://access.redhat.com/security/cve/cve-2019-3874
 https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#check-required-ports
 
 
+### Minimize IAM roles :
+</br>
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/040a4c66-d9c5-4568-932e-86b527382db1)
+</br>
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/d969e3de-bf36-4c59-88b0-6165bc77c82f)
+
+</br>
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/e56558bc-89bf-4483-a811-065f886ec614)
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/c0bf8f92-f644-4142-81c5-3ab24b8372e5)
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/00935951-2a58-4946-a61c-12e7902bfcef)
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/4fa9764c-7bc8-4331-a6f1-be62579ad272)
+
+- We cannot attach an IAM policy to the AWS resource, instead we have to create the Role and then assign that role to the AWS resources.
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/abb7aa14-d5a2-45e0-922c-5e03a9e8671a)
+
+
+- Audit the policy and roles and refine them, you can use AWS Trusted Advisor for security checks in realtime and provides the guidance accourdingly.
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/8886859e-6ba5-4dfa-90cc-fa429dd17ba8)
+
+
+### Minimize external access to the network :
+</br>
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/999ae430-4745-4d28-aab3-c16ded2a5c67)
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/e2aa7d8e-3a38-4439-9188-3d401863d66f)
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/194f592a-f4c0-4370-92c8-1c84e1136817)
+- OR instead of using these tools you can use linux IPTABLES, UFW tools to apply these policies on the network devices.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
