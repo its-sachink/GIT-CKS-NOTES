@@ -1,4 +1,4 @@
-# System Hardening :
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/592c27af-be31-48ed-9877-d040b0ddb4fa)# System Hardening :
 
 ## Section Introduction :
 
@@ -223,6 +223,100 @@ https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-ku
 ![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/e7cf9eaf-8c8b-4b76-8343-222716386767)
 
 ![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/b619aa85-83e3-4e1a-a1d7-284bf85300e0)
+
+</br>
+</br>
+</br>
+
+### Linux Syscalls :
+</br>
+
+- We will understand the Linux system calls and what happens when a application runs under a hood.
+
+- Kernel is the interface between Hardware and Application.
+
+- Kernel runs inside the Kernel space which include the kernel code, kernel extensions and the device drivers.
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/fbfa5683-ce88-4202-b726-f960e0429743)
+
+- Applications running on user space get access to data on devices by making special request to the kernel called systems calls.
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/31d02878-f4bc-4dbe-bbf0-d5246e4d1e83)
+
+- For example to create an empty file to create the error.log file it will execute several system calls.
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/2cf8fde2-4696-41fb-96bf-e8b4eeb1f66e)
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/6411ba4f-12d5-4e9e-bac0-ee2dbb0a2988)
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/39afe969-981c-4d21-abb8-740f9b77810c)
+
+
+- To trace the syscalls invoked by the running process, you need to find the PID of the running process.
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/e0aefa89-556d-43fa-992c-29e407d28ccb)
+
+- Summary of all the syscalls used by the command.
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/75a06372-d336-43c0-b606-a5bedfb90778)
+
+
+</br>
+</br>
+</br>
+
+### AquaSec Tracee :
+</br>
+
+- Tracee : A tool from aquasec which can be used to trace a syscall on a containers.
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/27d15746-e7c4-4291-812a-39b0274b7320)
+
+- It uses eBPF to trace the system calls, eBFP can run the programs directly on the kernel space without interfering in the kernel source code or without loading any kernel modules.
+- As a result eBPF programs are used to create tools, that can monitor the OS and detect suspicious behavior.
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/903faa7a-03a8-49c7-a120-29797065c303)
+
+- Tracee uses an eBPF technology and is run as a docker container and build & run the program in /tmp/tracee directory by default.
+- Bind mount the directory from the host to the containers.
+- Tracee also needs an access to kernel modules in /lib/modules & /usr/src.
+- Finally tracee needs priviledged access as well on the host.
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/afa49427-d6bd-4901-a4ec-b213c1cb7e77)
+
+
+- Way to capture the syscall from the containers.
+
+- To observe the syscall generated from the single command such as `ls` from the container, run with below options.
+-  -- trace comm=ls
+
+ ![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/a979f8ae-32b2-4959-882d-6eb676bd32bf)
+
+ - Similarly to observe all the syscall from the process of the container run the below command.
+ -  --trace pid=new
+ -  This will give output for all the new processes generated on the hosts.
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/21919a1b-354c-4855-a0fd-c4ca8426319b)
+
+
+- Observe syscalls generated from the new container. Run with the flag,
+-  --trace container=new
+
+  ![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/a6841dfa-5f9c-40e5-acc8-fd7a5a9bc2e8)
+
+ 
+  
+### Restrict syscalls using seccomp :
+</br>
+
+
+  
+
+
+
+
+
+
 
 
 
