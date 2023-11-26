@@ -1,4 +1,4 @@
-##### Labs 1 :
+##### Labs 2 :
 
 - There is a user named himanshi on the controlplane host. Suspend this user account so that this user cannot login to the system but make sure not to delete it.
 
@@ -8,3 +8,96 @@
 - Create a user named sam on the controlplane host. The user's home directory must be /opt/sam. Login shell must be /bin/bash and uid must be 2328. Make sam a member of the admin group.
 
     # useradd -d /opt/sam -s /bin/bash -G admin -u 2328 sam
+
+
+
+
+##### Labs 3 : identify-open-ports-remove-packages-services
+
+</br>
+
+- Which of the following commands is used to list all installed packages on an ubuntu system?
+
+    # apt list --installed
+
+Listing... Done
+adduser/focal,now 3.118ubuntu2 all [installed]
+apache2-bin/focal-updates,focal-security,now 2.4.41-4ubuntu3.15 amd64 [installed,automatic]
+apache2-data/focal-updates,focal-security,now 2.4.41-4ubuntu3.15 all [installed,automatic]
+
+
+
+- Check if python2.7 package is installed on the controlplane host.
+
+    # apt list --installed | grep -i python2.7
+
+
+
+- Which of the following commands can be used to list only active services on a system?
+
+    The --all flag with systemctl list-units prints ALL services, both active and inactive.
+
+    The --state inactive flag when added to this command will print only the inactive servies.
+
+
+    # systemctl list-units --type service
+
+
+
+- On the controlplane host, we have nginx service running which isn't needed on that system. 
+    
+    Stop the nginx service and remove its service unit file. Make sure not to remove nginx package from the system.
+
+        - Find out the name of the unit file:
+
+            # systemctl list-units --all | grep nginx
+
+
+        - Stop Nginx service:
+
+            # systemctl stop nginx
+
+        - Find out the location of the service unit:
+
+            # systemctl status nginx
+
+        - Remove the unit file:
+
+            # rm /lib/systemd/system/nginx.service
+
+
+
+- We want to blacklist the evbug kernel module on controlplane host.
+        Important Note: Do not reboot the node!
+
+        # vim /etc/modprobe.d/blacklist.conf
+
+        Change:
+
+            #blacklist evbug
+                to
+
+            blacklist evbug
+
+
+
+
+- Remove the nginx package from controlplane host.
+
+    # apt remove nginx -y
+
+
+
+- We have a service running on controlplane host which is listening on port 9090. 
+    Identify the service and stop the same to free the 9090 port.
+
+    # netstat -natp  | grep 9090
+
+    # systemctl stop apache2
+
+
+
+- We have the wget package version v1.18 installed on the host controlplane. There were issues reported with the current version of wget. 
+    Please check for updates available for this package and update to the latest version available in the apt repos.
+
+    # 
