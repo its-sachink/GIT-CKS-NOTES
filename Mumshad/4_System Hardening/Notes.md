@@ -571,6 +571,43 @@ our application makes.
 
 - Add a linux capabilties on kubernetes pods.
 
+- Previously we were not able to change the Date of the system even though the SecComp profile was disabled on the Pod by default.
+- Containers or Pods by default don't have capability to change the Date unlike Linux system CLI.
+- What is the reason.
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/75883ad1-44d5-4ae8-84e1-afb4794f66ea)
+
+
+- Lets us understand the fundamentals of how processes run in the Linux system.
+    - Priviledged process : Run with UID 0 with no restriction.
+    - Unpriviledged process : Run with non-zero with lot of restriction.
+ 
+    - Now post Kernel 2.2 we can assign subset of process permissions only, instead of all the permissions for a priviledged process.
+
+    ![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/f5965b4c-c3ab-45cf-846a-f9aa995301c3)
+
+    - Complete list of capabilities on the Linux system.
+  ![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/28e6751c-36e6-44a1-84ca-6a1076669f7a)
+
+    - To check which capabilities a command needs use below command and process.
+  
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/78016592-033b-47d7-a4cc-bd5468e9b25e)
+
+    - container are started with only 14 capabilities at the start time.
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/ebccebb5-f368-4f11-8a79-c786d4dc38a1)
+
+    - Capbilities can be added to the container as below.
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/89d4de50-0395-4ec2-8884-331e2aaa0de5)
+
+
+    - to drop a capabilities.
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/b052aaf9-153f-4939-b628-553207423b35)
+
+
+
+
+  
+
 
 
 
