@@ -494,6 +494,111 @@ our application makes.
 </br>
 
 ![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/700d9f1f-3076-428b-a901-ff5f100b6bc6)
+</br>
+
+- Creating a custom application profile from scratch.
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/260a53bc-3b0d-486e-8b30-91145bbe68cf)
+
+-Let's create a ApprArmor profile for this specific script.
+   - Let's install the AppArmor utils packages.
+   ![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/bdda8f0b-4c77-4c79-b420-608a1b9b25ca)
+
+- create a profile for the bash script application.
+    
+   ![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/5f3396a6-2477-4bdf-a01e-10c7366159ff)
+
+  - Enter "S" to scan the system logs for the AppArmor events that was generated when we ran the script. This generates a series of question which will guide
+    build and generate the Security profile.
+    ![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/c3f407ea-f188-4425-a3f3-be44086f6eac)
+
+    ![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/62a6f02d-7530-4fbe-8929-643742e2d796)
+
+    ![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/4c9db1ea-ad8b-40af-9649-cbf26031e555)
+
+    ![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/7a82071f-f5c2-4d50-9c09-0f47fc2d7801)
+
+    ![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/868f9517-252b-4724-ac46-598088cb4c01)
+
+    ![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/bbb57dae-8809-441f-972d-a9138e83a378)
+
+</br>
+  - A new AppArmor profile along with the existing profiles are stored in the directory "/etc/apparmor.d/"
+
+  ![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/3ca0d758-8baf-43f5-9e97-4badb21db8e3)
+
+  - Let try to run script again by changing the output to "/opt" instead of "/opt/app/data".
+
+  ![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/d9c652cc-b847-4c38-ae9e-faf7c3602594)
+
+  - To load a profile run the command apparmor_parser as below. If nothing is written that means profile was successfully loaded.
+
+   ![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/28053aa5-2a0b-4fd6-a593-e30a521695f2)
+
+    
+  - To disable a profile run the same command with "-R" option. And then create s symlink as below.
+
+    ![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/98016593-cddb-4f13-8764-0c83781b7a2b)
+
+</br>
+</br>
+</br>
+
+### AppArmor in Kubernetes :
+</br>
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/910b1d79-33a6-45f6-9a5a-8d50721e540a)
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/08bf666f-bb40-451d-81cc-6ebbd05edf4e)
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/e741e54f-f2d0-49e4-bd01-4fd1c47e0c71)
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/9c256289-3311-45bc-b726-49b4547f6c36)
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/04364790-a529-4658-a24e-bffc74427bdc)
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/901a6b44-1638-4ef3-ac4a-bac08a2831d1)
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/db2e20e6-cfa8-47b0-9d4e-58ad9e35c0dc)
+
+
+</br>
+</br>
+</br>
+
+### Linux Capabilities in Kubernetes :
+</br>
+
+- Add a linux capabilties on kubernetes pods.
+
+
+
+
+
+
+
+
+
+
+  
+    
+
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+  
+
+
 
 
 
