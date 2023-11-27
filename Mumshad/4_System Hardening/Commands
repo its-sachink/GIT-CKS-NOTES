@@ -157,4 +157,89 @@ apache2-data/focal-updates,focal-security,now 2.4.41-4ubuntu3.15 all [installed,
 
     # ufw disable
 
+
+
+
+
+##### Labs 5 : SYSTEM HARDENING, LAB – SECCOMP :
+
+- Which of the following commands/tools can be used to trace syscalls ?
+
+    # strace
+
+
+- Which syscall is NOT made by the command ls /root?
+
+    # strace -c ls /root
+
+    - The ls command should not be using the connect syscall.
+
+
+- For answering the next question, open a new terminal on the controlplane node by clicking on the + button next to Terminal 1. 
+    Next, on this new terminal, run the Tracee tool as a container, with the appropriate flags to detect syscalls from new containers.
+
+    On the controlplane node, run:
+
+    # kubectl apply -f /root/tracee-deployment.yaml
+
+    After the pod becomes ready , stream the logs using below command:
+
+    # kubectl logs -f `kubectl get pods -l=io.kompose.service=tracee -o custom-columns=":metadata.name" --no-headers`
+
+
+
+
+
+- We have just scheduled a new pod. What is the command run by the container inside this pod?
+
+    # kubectl describe pod hello | grep -i args -C 3
+
+
+
+- A seccomp profile file called custom-profile.json has been placed under /root directory.
+
+    - This profile has the default action of SCMP_ACT_ERRNO that blocks all syscalls by default. 
+    The syscalls to be allowed are part of the whitelist. This is an example of a whitelist type profile.
+
+
+
+- What is the default Seccomp profile location in this cluster?
+
+    - Seccomp profile location by default is set to 
+        # /var/lib/kubelet/seccomp
+
+
+
+
+- Create a new pod called audit-nginx using the nginx image and make use of the audit.json seccomp profile in the pod's security context.
+
+    The audit.json file is already present in the default seccomp profile path in the controlplane node.
+
+
+    # kubectl run audit-nginx --image=nginx --restart=Never --dry-run -o yaml > audit-nginx.yaml
+
+    # vim audit-nginx.yaml
+
+    # cat audit-nginx.yaml 
+        apiVersion: v1
+        kind: Pod
+        metadata:
+        creationTimestamp: null
+        labels:
+            run: audit-nginx
+        name: audit-nginx
+        spec:
+        securityContext:
+            seccompProfile:
+            type: Localhost
+            localhostProfile: profiles/audit.json
+        containers:
+        - image: nginx
+            name: nginx
+        dnsPolicy: ClusterFirst
+        restartPolicy: Never
+        status: {}
+
+    # kubectl apply -f audit-nginx.yaml
+
     
