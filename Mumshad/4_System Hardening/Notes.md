@@ -493,6 +493,10 @@ our application makes.
 ### Creating AppArmor Profiles :
 </br>
 
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/700d9f1f-3076-428b-a901-ff5f100b6bc6)
+
+
+
 
 
 
