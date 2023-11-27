@@ -444,8 +444,69 @@ our application makes.
 
 ### AppArmor :
 </br>
+</br>
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/be231c11-2966-41c8-9699-3fc46cdf693a)
+
+- We can make use of SecComp to effectively restrict which syscalls a container can or cannot use, we cannot use it to restrict the a program access to specific objects such as a file or a directory.
+
+- How do we limit a container from writing to a specific filesystem or a directory, although here it cannot create a directory.
+#### to implement such a fine grained control over the processes of the containers we have to make use of the AppArmor.
+ - It is a linux security module
+ - It is installed by default on most linux distributions.
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/68fb3bc5-a30e-499d-b895-f9c74c0d33f6)
+
+</br>
+- To make use of AppArmor, the AppArmor kernel module must be first loaded on all the nodes where the conainer would run. This can be verified by checking the "enabled" file under the "/sys/module/apparmor/parameters/enabled" directory.
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/8c60540c-099f-4c00-830f-34e3a5212f2f)
+
+</br>
+- AppArmor is applied to an application via the profile.
+- This profile must be loaded into the kernel.
+- these profiles are simple text files that defines what resources can be used by an application, these include linux capabilities, network/file resources, etc.
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/05c01267-fca9-437e-956c-249211b58b3e)
+
+- For example
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/fa702ab7-e909-4077-bd4f-9bf2dc91fc95)
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/f06ec6a8-49aa-478f-bc43-7890c6901a96)
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/74297406-8f1e-4941-aab8-1b22995e738e)
+
+<br>
+- To check the status of the AppArmor profiles that are loaded use below thing.
+- Profiles can be loaded in 3 different modes, enfore, complain, unconfined.
+    - enforce : Apprarmor will monitor and will enforce the rules on any application that fits the profile.
+    - complain : It will log the events and will allow all the tasks.
+    - unconfined : will allow application to perform any task but will not log any events.
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/9834231d-6840-46e4-ad86-735cea99d6c4)
 
 
+</br>
+</br>
+</br>
+
+### Creating AppArmor Profiles :
+</br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
 
 
 
