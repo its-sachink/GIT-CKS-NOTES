@@ -242,4 +242,23 @@ apache2-data/focal-updates,focal-security,now 2.4.41-4ubuntu3.15 all [installed,
 
     # kubectl apply -f audit-nginx.yaml
 
-    
+
+
+
+
+##### Labs 6 : SYSTEM HARDENING, LAB – APPARMOR :
+
+- Is the AppArmor module loaded in controlplane node?
+
+    # aa-status
+
+
+- Load the AppArmor profile called custom-nginx on controlplane node and make sure that it is in enforced mode.
+
+    The profile file is called usr.sbin.nginx located in the default AppArmor profiles directory.
+
+    # apparmor_parser -q /etc/apparmor.d/usr.sbin.nginx
+
+
+
+- 
