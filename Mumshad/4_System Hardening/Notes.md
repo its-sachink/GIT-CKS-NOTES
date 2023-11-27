@@ -438,6 +438,13 @@ our application makes.
 - Exam Tip : They might not ask to create a custom SecComp profile, however they will ask to copy the custom SecComp profile to the default SecComp location to the all nodes of the kubernetes cluster.
 - An then use it to create the Pods.
 
+</br>
+</br>
+</br>
+
+### AppArmor :
+</br>
+
 
 
 
