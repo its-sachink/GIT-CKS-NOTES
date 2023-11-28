@@ -1,0 +1,46 @@
+##### Lab : Security Contexts
+
+- What is the user used to execute the sleep process within the ubuntu-sleeper pod?
+
+    # kubectl exec ubuntu-sleeper -- whoami
+
+
+- Edit the pod ubuntu-sleeper to run the sleep process with user ID 1010.
+
+    # kubectl get pod ubuntu-sleeper -o yaml > sleeper.yaml
+    # vim sleeper.yaml
+    # cat sleeper.yaml | grep -i securitycontext -C 3
+        spec:
+        containers:
+        - command:
+            - sleep
+            - "4800"
+            image: ubuntu
+            name: ubuntu-sleeper
+            securityContext:
+            capabilities:
+                add: ["SYS_TIME"]
+
+    # kubectl delete pod ubuntu-sleeper --force     << To delete the Pod faster.
+
+    # kubectl apply -f sleeper.yaml 
+        pod/ubuntu-sleeper created
+
+
+- Now update the pod to also make use of the NET_ADMIN capability.
+
+    # vim sleeper.yaml
+        spec:
+        containers:
+        - command:
+            - sleep
+            - "4800"
+            image: ubuntu
+            name: ubuntu-sleeper
+            securityContext:
+            capabilities:
+                add: ["SYS_TIME", "NET_ADMIN"]
+    # kubectl delete pod ubuntu-sleeper.yaml
+
+    # kubectl apply -f sleeper.yaml
+
