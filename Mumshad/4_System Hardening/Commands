@@ -261,4 +261,39 @@ apache2-data/focal-updates,focal-security,now 2.4.41-4ubuntu3.15 all [installed,
 
 
 
-- 
+- The Restricted Site should not be served by the nginx pod.
+     It is loaded from the file /usr/share/nginx/html/restricted/index.html inside the nginx container.
+     The custom-nginx profile allows data to be read from this directory.
+
+     Let's fix that. Another profile is created at /etc/apparmor.d/usr.sbin.nginx-updated which prevents reads on the restricted directory inside the container.
+     Use this AppArmor profile and recreate this container.
+
+     - The profile in this file is called restricted-nginx. First, make sure it is loaded using the aa-status command.
+        - If not, run the apparmor_parser -q /etc/apparmor.d/usr.sbin.nginx-updated and validate the aa-status command again.
+        - Next, update the pod YAML file's annotation with the restricted-nginx apparmor profile and then recreate the pod.
+
+        # aa-status | grep -i restricted
+        # apparmor_parser -q /etc/apparmor.d/usr.sbin.nginx-updated
+        # aa-status | grep -i restricted   
+            restricted-nginx
+
+        # kubectl edit pod nginx
+            error: pods "nginx" is invalid
+            A copy of your changes has been stored to "/tmp/kubectl-edit-397098447.yaml"
+            error: Edit cancelled, no valid changes were saved.
+
+        # cat /tmp/kubectl-edit-397098447.yaml | grep -i annotation -C 3
+        #
+            apiVersion: v1
+            kind: Pod
+            metadata:
+            annotations:
+                container.apparmor.security.beta.kubernetes.io/nginx: localhost/restricted-nginx
+            creationTimestamp: "2023-11-28T12:51:10Z"
+            labels:
+
+        # kubectl delete pod nginx
+            pod "nginx" deleted
+
+        # kubectl create -f /tmp/kubectl-edit-397098447.yaml 
+            pod/nginx created
