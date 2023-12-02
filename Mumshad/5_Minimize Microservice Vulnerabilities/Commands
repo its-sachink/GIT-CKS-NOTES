@@ -49,3 +49,62 @@
 
 ##### Lab : Admission Controllers
 
+- Which admission controller is enabled in this cluster which is normally disabled?.
+
+    # cat /etc/kubernetes/manifests/kube-apiserver.yaml | grep -i enable
+    - --enable-admission-plugins=NodeRestriction
+    - --enable-bootstrap-token-auth=true
+
+
+    # cat /etc/kubernetes/manifests/kube-apiserver.yaml | grep -i enable-admission-plugins
+    - --enable-admission-plugins=NodeRestriction
+
+
+
+
+
+-   # kubectl run nginx --image=nginx -n blue
+
+    The previous step failed because kubernetes have NamespaceExists admission controller enabled which rejects requests to namespaces that do not exist. So, to create a namespace that does not exist automatically, we could enable the NamespaceAutoProvision admission controller
+        Enable the NamespaceAutoProvision admission controller
+
+        Note: Once you update kube-apiserver yaml file, please wait for a few minutes for the kube-apiserver to restart completely.
+
+
+    # vim /etc/kubernetes/manifests/kube-apiserver.yaml
+
+    # cat /etc/kubernetes/manifests/kube-apiserver.yaml | grep -i enable
+    - --enable-admission-plugins=NodeRestriction,NamespaceAutomProvision        << Add NamespaceAutoProvision paramater
+
+    # kubectl get pods          << check if the kube-api server Pod has come up
+
+
+
+
+- Note that the NamespaceExists and NamespaceAutoProvision admission controllers are deprecated and now replaced by NamespaceLifecycle admission controller.
+
+    - The NamespaceLifecycle admission controller will make sure that requests to a non-existent namespace is rejected and that the default namespaces such as default, kube-system and kube-public cannot be deleted.
+
+
+
+
+- Now Disable DefaultStorageClass admission controller.
+
+    - This admission controller observes creation of PersistentVolumeClaim objects that do not request any specific storage class and automatically adds a default storage class to them. This way, users that do not request any special storage class do not need to care about them at all and they will get the default one.
+
+    - Note: Once you update kube-apiserver yaml file then please wait few mins for the kube-apiserver to restart completely.
+
+    # vim /etc/kubernetes/manifests/kube-apiserver.yaml
+
+    # cat /etc/kubernetes/manifests/kube-apiserver.yaml | grep -i disable
+    - --disable-admission-plugins=DefaultStorageClass
+
+
+- Since the kube-apiserver is running as pod you can check the process to see enabled and disabled plugins.
+
+    # ps -ef | grep kube-apiserver | grep admission-plugins
+
+    # ps -ef | grep -i kube-api | grep -i admission-plugins
+        root       12953   12829  0 02:00 ?        00:00:05 kube-apiserver --advertise-address=192.9.0.6 --allow-privileged=true    --authorization-mode=Node,RBAC --client-ca-file=/etc/kubernetes/pki/ca.crt 
+        --enable-admission-plugins=NodeRestriction,NamespaceAutoProvision 
+        --disable-admission-plugins=DefaultStorageClass
