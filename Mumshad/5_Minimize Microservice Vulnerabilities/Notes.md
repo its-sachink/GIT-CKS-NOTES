@@ -273,6 +273,77 @@ https://www.youtube.com/watch?v=4mBJSIhs2xQ
 ## Chapter 6 - OPA in Kuberentes :
 </br>
 
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/f10eabfd-9fc0-449b-b38e-b52d465dec42)
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/81f25cdf-f6ca-4f4c-a753-c57fa4e170bd)
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/20de1efb-fcd1-4d15-b0fd-7d6c3b83f6e1)
+
+
+##### Instead of creating our own webhook server and validating the policy.
+     - We can connect our mutating or validating webhooks now to OPA.
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/a4807787-f68a-4a04-a4e5-46af9672b4fc)
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/8d4f64a3-c2de-40dc-a1a6-8e8a5489faee)
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/7d7450ca-efaf-406a-9fbb-a9c4fde5b589)
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/9bfc7646-5877-4a04-8ca0-9fd9800e6426)
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/9bb15b91-eba4-4957-8401-f729ce8049b1)
+
+- Make sure Pods names across all the namespaces are unique.
+- Here the information is not send by the validating webhook, as to what all list of Pods are already running in a Cluster.
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/02f28613-7993-4fc2-9de5-bfebdbe8c36c)
+
+- How does OPA know about the resources in the kubernetes.
+- We can make that happen using a kube-mgmt service.
+- KUBE-MGMT Service : It is a service deployed as a side car container along with OPA.
+        - It is used to replicate resource definitions from Kubernetes, so they can be cached at OPA.
+        - This information can then be imported, and used to refer to objects in the kubernetes while developing policies.
+        - It also used to Load policies to OPA, by simply creating a configmap object in kubernetes as a opposed loading policies directly on OPA.
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/a789f3a7-5258-4f5f-9108-f3fc1b6026d9)
+
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/bb8d2664-71c5-40bb-a4da-9df757048572)
+
+- Earlier we could load policies into OPA by calling policies API using a PUT in CURL operation.
+- But now with KUBE-MGMT service, we create a configmap on kubernetes with the label "openpolicyagent.org/policy: rego" and under the data ==>> main section we have the REGO policy defined in a text format.
+- The KUBE-MGMT service will identify these policies in a ConfigMap and load them into the OPA as policies. So you don't have to policy to OPA.
+- Once KUBE-MGMT service is configured, you have to create the ConfigMap and have the policy defined with in that particular ConfigMap.
+</br>
+</br>
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/6cec7827-c721-4f3f-8fe0-151c3546ebf1)
+
+- The OPA server and the KUBE-MGMT sidecar container are deployed as a deployment in kubernetes along with the necessary roles and rolebindings for permissions for the KUBE-MGMT service to access the ConfigMaps and a service to make OPA service available to the KUBE-API server.
+- All of these is deployed in the OPA namespace.
+- For kubernetes to integrate with OPA we create a Validating WebHook configuration.
+- All request go through the admission controller through the ValidatingAdmissionWebhook into the OPA service for validation.
+- The above method is an older way of integration.
+- The newer way is to integrate using the OPA GATEKEEPER Service.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
