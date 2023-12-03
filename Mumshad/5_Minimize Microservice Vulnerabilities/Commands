@@ -108,3 +108,123 @@
         root       12953   12829  0 02:00 ?        00:00:05 kube-apiserver --advertise-address=192.9.0.6 --allow-privileged=true    --authorization-mode=Node,RBAC --client-ca-file=/etc/kubernetes/pki/ca.crt 
         --enable-admission-plugins=NodeRestriction,NamespaceAutoProvision 
         --disable-admission-plugins=DefaultStorageClass
+
+
+
+
+##### Lab : Validating and Mutating Admission Controllers :
+
+- Create namespace "webhook-demo" where we will deploy webhook components
+
+    # kubectl create ns webhook-demo
+
+
+- Create TLS secret webhook-server-tls for secure webhook communication in webhook-demo namespace.
+    We have already created below cert and key for webhook server which should be used to create secret.
+
+        Certificate : /root/keys/webhook-server-tls.crt
+
+        Key : /root/keys/webhook-server-tls.key
+
+    # kubectl -n webhook-demo create secret tls webhook-server-tls \
+    --cert "/root/keys/webhook-server-tls.crt" \
+    --key "/root/keys/webhook-server-tls.key"
+
+
+- Create webhook deployment now.
+    We have already added sample deployment definition under /root/webhook-deployment.yaml so just create deployment with that definition.
+
+    # kubectl create -f /root/webhook-deployment.yaml 
+    deployment.apps/webhook-server created
+
+
+
+- Create webhook service now so that admission controller can communicate with webhook.
+
+    We have already added sample service definition under /root/webhook-service.yaml so just create service with that definition.
+
+
+
+- We have added MutatingWebhookConfiguration under /root/webhook-configuration.yaml.
+    If we apply this configuration which resource and actions it will affect?     
+
+        rules:
+      - operations: [ "CREATE" ]
+        apiGroups: [""]
+        apiVersions: ["v1"]
+        resources: ["pods"]
+    admissionReviewVersions: ["v1beta1"]
+    sideEffects: None
+
+    >> Pod with create operations
+
+    # kubectl create -f /root/webhook-configuration.yaml 
+    mutatingwebhookconfiguration.admissionregistration.k8s.io/demo-webhook created
+
+
+
+- # cat /root/webhook-configuration.yaml 
+apiVersion: admissionregistration.k8s.io/v1
+kind: MutatingWebhookConfiguration
+metadata:
+  name: demo-webhook
+webhooks:
+  - name: webhook-server.webhook-demo.svc
+    clientConfig:
+      service:
+        name: webhook-server
+        namespace: webhook-demo
+        path: "/mutate"
+      caBundle: LS0tLS1CRUdJTiBD
+      ZwpGaUpraFA1bTJIcnk3U3NBS3h3VkhFZEVGUT09Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K
+    rules:
+      - operations: [ "CREATE" ]
+        apiGroups: [""]
+        apiVersions: ["v1"]
+        resources: ["pods"]
+    admissionReviewVersions: ["v1beta1"]
+    sideEffects: None
+
+    - In previous steps we have deployed demo webhook which does below
+    - Denies all request for pod to run as root in container if no securityContext is provided.
+    - If no value is set for runAsNonRoot, a default of true is applied, and the user ID defaults to 1234
+    - Allow to run containers as root if runAsNonRoot set explicitly to false in the securityContext
+
+In next steps we have added some pod definitions file for each scenario. Deploy those pods with existing definitions file and validate the behaviour of our webhook .
+
+
+
+- Deploy a pod with no securityContext specified. We have added pod definition file under /root/pod-with-defaults.yaml
+
+
+- What are runAsNonRoot and runAsUser values for previously created pods securityContext?
+    We did not specify any securityContext values in pod definition so check out the changes done by mutation webhook in pod
+
+    # kubectl get po pod-with-defaults -o yaml | grep -A2 " securityContext:"
+    securityContext:
+        runAsNonRoot: true
+        runAsUser: 1234
+
+
+
+- Deploy pod with a securityContext explicitly allowing it to run as root.
+    We have added pod definition file under /root/pod-with-override.yaml
+        Validate securityContext after you deploy this pod.
+
+        # kubectl apply -f /root/pod-with-override.yaml
+
+        # kubectl get po pod-with-override -o yaml | grep -A2 " securityContext:"
+          securityContext:
+             runAsNonRoot: false
+          serviceAccount: default
+
+
+
+
+- Deploy a pod with a conflicting securityContext i.e. pod running with a user id of 0 (root)
+    We have added pod definition file under /root/pod-with-conflict.yaml
+    Mutating webhook should reject the request as its asking to run as root user without setting runAsNonRoot: false
+
+    # kubectl apply -f /root/pod-with-conflict.yaml
+    Error from server: error when creating "/root/pod-with-conflict.yaml": admission webhook "webhook-server.webhook-demo.svc" denied the request: runAsNonRoot specified, but runAsUser set to 0 (the root user)
+
