@@ -172,6 +172,7 @@
 
 </br>
 </br>
+
 ![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/3cc74069-834b-4358-ac98-3ad397c552d9)
 
 
@@ -185,29 +186,34 @@
 #### Deploy a webhook server :
 
 </br>
-      ![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/242c8d48-1a9d-4012-9373-6d6607b42c61)
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/242c8d48-1a9d-4012-9373-6d6607b42c61)
 
       - Generally written on GoLang language.
       - It must accept the mutate & validate API's and respond in the JSON object that the webserver expects.
 </br>
 </br>
-      ![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/9a6863f8-ef87-4b02-978f-4db4836688ee)
 
-      ![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/d863de0f-cf52-46f5-8c1b-dab0a62395e2)
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/9a6863f8-ef87-4b02-978f-4db4836688ee)
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/d863de0f-cf52-46f5-8c1b-dab0a62395e2)
 
 </br>
 </br>
-      ![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/122131d7-32d5-48a2-a34e-812b2657ebdc)
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/122131d7-32d5-48a2-a34e-812b2657ebdc)
 
       - Once we have developed the webhook server, next step is to host it.
       - So we either run it as a server/containerise it within the kubernetes cluster itself as a deployment.
       - If deployed as a deployment in the kubernetes cluster, then it needs a SVC to be accessed.
 </br>
 </br>
-      ![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/2de7a935-ab17-4425-9549-53183e8f14eb)
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/2de7a935-ab17-4425-9549-53183e8f14eb)
+
 </br>
       
-      ![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/8146c8a5-29cb-4d91-850b-8085710ee559)
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/8146c8a5-29cb-4d91-850b-8085710ee559)
 
       - The next step it to configure our cluster to reach out to the service to validate or mutate the requests.
       - For this we create a validating configuration object.
