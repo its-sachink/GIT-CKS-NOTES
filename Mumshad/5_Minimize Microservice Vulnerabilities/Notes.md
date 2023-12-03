@@ -218,6 +218,82 @@
       - The next step it to configure our cluster to reach out to the service to validate or mutate the requests.
       - For this we create a validating configuration object.
 
+</br>
+</br>
+</br>
+
+## Chapter 5 - Open Policy Agent :
+</br>
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/4f8df774-15e9-4834-98b8-d35ac8eb044e)
+
+</br>
+</br>
+
+
+- Authorization : What API can the user access and what actions can they perform, this is taken care by OPA.
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/5e6ec3e6-7916-40c2-961f-9ecffd04dc44)
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/c5711bcd-c22d-49c4-b3a0-05163019e129)
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/703a8d6b-08c0-4314-9085-96d4e2114de8)
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/223e679b-7ef0-47fe-b349-137539ac1ed5)
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/e11e07ca-4117-44bf-88b8-63c4ef99f25d)
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/ea474ec4-335d-4ac9-9619-ae157c05ee39)
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/8861a2c2-622c-4cbd-97a5-e478fde2da5b)
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/4b6b0ac0-1d1e-47af-97d0-728d69b6dd23)
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/ca406f67-7cf6-4959-bb1e-4081036a6926)
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/bd4a8c87-b702-44dd-b69f-17d7f0c6b805)
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/1d9e9a83-6748-444b-b2b1-7f21e2c1dafc)
+
+#### Reference links
+Below are some references:
+
+How Netflix Is Solving Authorization Across Their Cloud [I] – Manish Mehta & Torin Sandall, Netflix
+
+https://www.youtube.com/watch?v=R6tUNpRpdnY
+
+OPA Deep Dive
+
+https://www.youtube.com/watch?v=4mBJSIhs2xQ
+
+</br>
+</br>
+</br>
+
+## Chapter 6 - OPA in Kuberentes :
+</br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
 
       
 
