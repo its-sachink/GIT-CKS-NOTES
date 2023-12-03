@@ -338,7 +338,45 @@ https://www.youtube.com/watch?v=4mBJSIhs2xQ
 
 ![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/23318be4-6d54-47e0-98b0-a470be272614)
 
+</br>
+
 - Configmaps are plane readable files, hence we use the kuberentes secrets.
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/acfd7da7-06f5-4924-8dbd-c4aaf09d99ac)
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/596d2737-0642-4454-bccd-74b156c6dbaf)
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/00362f5b-28c9-40ea-8384-721ee519afbe)
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/d4b3c0c1-006a-418f-84d6-270c9a55e8a5)
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/44d28749-7dff-4160-afb9-0250c03465db)
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/3d342bb3-6779-4fdd-9aaa-a2ae09f96da6)
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/b03ab9c6-cecf-4c77-875e-acdd965c4b23)
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/479a45ea-3b22-4442-ad2c-75409bdd80a5)
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/f7379253-3d6d-4afe-9683-acc540a5a1aa)
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/563d546d-17ac-4085-8817-7d678535f983)
+
+- Each attribute in the secret is created as a file with the value of the secrets as its content. 3 files are created for the 3 secrets.
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/6e2bc361-d05b-46ff-a055-7c1b9280cca2)
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/689127c1-6313-4f6e-a035-abc51898be7a)
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/7ef694b1-cbda-4292-a7b1-19b8cebbabfa)
+
+
+
+
+
+
+
+
 
 
 
