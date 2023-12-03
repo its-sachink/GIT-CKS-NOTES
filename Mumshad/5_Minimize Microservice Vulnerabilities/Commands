@@ -228,3 +228,28 @@ In next steps we have added some pod definitions file for each scenario. Deploy 
     # kubectl apply -f /root/pod-with-conflict.yaml
     Error from server: error when creating "/root/pod-with-conflict.yaml": admission webhook "webhook-server.webhook-demo.svc" denied the request: runAsNonRoot specified, but runAsUser set to 0 (the root user)
 
+
+
+
+##### Lab : OPA :
+
+- Install and run OPA version v0.38.1 on the system in the background.
+
+    Package should be opa_linux_amd64. Once downloaded, make package executable and run it as a server.
+
+    - https://github.com/open-policy-agent/opa/releases
+        Package: opa_linux_amd64
+
+   # Find the given version of OPA from the release page.
+        export VERSION=v0.38.1
+        curl -L -o opa https://github.com/open-policy-agent/opa/releases/download/${VERSION}/opa_linux_amd64
+
+        chmod 755 ./opa
+
+        ./opa run -s &   
+
+
+
+- Load policy /root/sample.rego to OPA with the name samplepolicy.
+
+    # curl -X PUT --data-binary @sample.rego http://localhost:8181/v1/policies/samplepolicy
