@@ -327,6 +327,21 @@ https://www.youtube.com/watch?v=4mBJSIhs2xQ
 - The newer way is to integrate using the OPA GATEKEEPER Service.
 
 
+</br>
+</br>
+</br>
+
+## Chapter 7 - Manage Kubernetes secrets :
+</br>
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/75fc79b2-7e2c-489a-a18d-b4fc6fa2b355)
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/23318be4-6d54-47e0-98b0-a470be272614)
+
+- Configmaps are plane readable files, hence we use the kuberentes secrets.
+
+
+
 
 
 
