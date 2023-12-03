@@ -45,6 +45,7 @@
 
 ![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/1e129438-1185-45bc-8c8f-3472f534b85b)
 
+
 - What user is allowed to access what kind of API operation, but what if you want to do more than to define what kind of access user have to the resources.
 - For example : When a pod creation request comes in, review the configuration file and look at the image name and
       - Say you do not want to allow deployment of image from public dockerhub image registry.
