@@ -296,4 +296,64 @@ In next steps we have added some pod definitions file for each scenario. Deploy 
         # kubectl create configmap unique-host --from-file=/root/unique-host.rego 
         configmap/unique-host created
 
+
+
+##### Lab : Manage secrets in kubernetes :
+
+
+- How many secrets are defined in the dashboard-token secret?
+
+    Run the command: kubectl describe secrets dashboard-token and look at the "data" field.
+        There are three secrets - ca.crt, namespace and token.
+
+    
+
+- Create a new secret named db-secret with the data given below.
+
+        Secret Name: db-secret
+        Secret 1: DB_Host=sql01
+        Secret 2: DB_User=root
+        Secret 3: DB_Password=password123
+
+    # kubectl create secret generic db-secret \
+    > --from-literal=DB_Host=sql01 \
+    > --from-literal=DB_User=root \
+    > --from-literal=DB_Password=password123
+    secret/db-secret created
+
+
+
+- Configure webapp-pod to load environment variables from the newly created secret.
         
+        # kubectl get pod webapp-pod -o yaml > webapp-pod.yaml
+
+        # vim webapp-pod.yaml 
+        Pod name: webapp-pod
+        Image name: kodekloud/simple-webapp-mysql
+        Env From: Secret=db-secret
+
+        apiVersion: v1
+        kind: Pod
+        metadata:
+        labels:
+            name: webapp-pod
+        name: webapp-pod
+        namespace: default
+        spec:
+        containers:
+        - image: kodekloud/simple-webapp-mysql
+            imagePullPolicy: Always
+            name: webapp
+            envFrom:                            <<<< Add secrets here.
+            - secretRef:
+                name: db-secret
+            volumeMounts:
+            - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+            name: kube-api-access-kb9kb
+            readOnly: true
+
+
+        # kubectl delete pod webapp-pod --force
+
+        # kubectl create -f webapp-pod.yaml 
+            pod/webapp-pod created

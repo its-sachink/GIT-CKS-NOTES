@@ -370,6 +370,12 @@ https://www.youtube.com/watch?v=4mBJSIhs2xQ
 
 ![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/7ef694b1-cbda-4292-a7b1-19b8cebbabfa)
 
+</br>
+</br>
+</br>
+
+## Chapter 9 - Demo: Encrypting Secret Data at Rest :
+</br>
 
 
 
