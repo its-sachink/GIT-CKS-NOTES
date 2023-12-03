@@ -253,3 +253,47 @@ In next steps we have added some pod definitions file for each scenario. Deploy 
 - Load policy /root/sample.rego to OPA with the name samplepolicy.
 
     # curl -X PUT --data-binary @sample.rego http://localhost:8181/v1/policies/samplepolicy
+
+
+
+
+##### Lab : OPA in kubernetes :
+
+
+- Create a configmap for OPA using the untrusted-registry.rego policy.
+
+    Use below files:
+
+        configmap file: /root/untrusted-registry.rego
+        configmap name : untrusted-registry
+
+    # kubectl create configmap untrusted-registry --from-file=untrusted-registry.rego
+    configmap/untrusted-registry created
+
+
+
+
+- Create a pod defined under /root/test.yaml in the namespace dev. Fix the OPA validation issue while creating the pod.
+
+    # kubectl -n dev create -f /root/test.yaml 
+    Error from server: error when creating "/root/test.yaml": 
+    admission webhook "validating-webhook.openpolicyagent.org" denied the request: image 'nginx' comes from untrusted registry
+
+    - Correct below line in /root/test.yaml
+
+        # image: hooli.com/nginx
+
+    - then run
+
+        # kubectl apply -n dev -f /root/test.yaml
+        # kubectl -n dev create -f /root/test.yaml 
+        pod/test created
+
+
+
+- Create a configmap named unique-host using the rego file /root/unique-host.rego for OPA
+
+        # kubectl create configmap unique-host --from-file=/root/unique-host.rego 
+        configmap/unique-host created
+
+        
