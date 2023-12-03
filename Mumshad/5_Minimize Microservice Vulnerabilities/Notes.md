@@ -116,6 +116,113 @@
   ![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/2bfd97e6-7dfc-4812-b320-457b3e216658)
   ![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/ff35dd38-3124-43a0-8265-fa95cb9f3295)
 
+</br>
+</br>
+</br>
+
+## Chapter 4 - Validating and Mutating Admission Controllers :
+</br>
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/2814a897-43bf-4277-bbb4-70f63bf8609a)
+
+</br>
+- We will look into different types of admission controllers & how we can configure our own admission controllers.
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/af17809f-e8e5-4361-974d-e2a5c441a72e)
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/1266839d-437e-4752-932c-d99c1b998c30)
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/7b07c763-38e1-448d-b832-3a2a7b254ce1)
+
+</br>
+- So, there are 2 types of addmission controllers till now we are seen.
+- Mutating Admission Controllers : Are those who change the Object.
+- Validating Admission Controllers : Are those who validate the Object definition.
+      - There can be a admission controller can also do both, that is mutate & Validate at the same time.
+      - Generally mutating admission controller are invoked first by a validating admission controller. So that any change made by mutating one can be validated be considered during the validating process.
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/8799e029-1e1b-4650-bfdf-019bd9d8765b)
+
+
+- What if we want our own Admission controller with our own mutation & validations that has our own logic.
+        - 2 support external admission controllers, there are 2 admission controllers available.
+              1) MutatingAdmission Webhook
+              2) ValidatingAdmission Webhook
+
+  ![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/4785d21a-d959-45aa-9eb4-93f5e09d143f)
+</br>
+</br>
+#### Admission controller webhook :
+</br>
+
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/ea6bb148-c4ff-44b6-ba76-7fc23733c452)
+
+
+  - We can configure these webhooks to point to a server that is hosted either within the kubernetes cluster or outside it.
+          - And our server will have our own admission webhook service running with our own code & logic.
+          - After a request is made for the resource, our built in admission controller hits the webhook that is configured.
+          - Once it hits a webhook, it makes a call to the admission webhook server by passing in Admission review object in a JSON format.
+          - Admission review JSON object : This object has all the details about the request such as
+                - the user that has made the request &
+                - the type of operation the user is trying to perform
+                - on what object & the details about the object itself
+
+          - On receving the request details the Admission webhook server responds with an admission review object with a result of whether the request is allowed or not.
+          - If the allowed field in the response it set to true, then the request is allowed or else it is rejected.
+
+</br>
+</br>
+![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/3cc74069-834b-4358-ac98-3ad397c552d9)
+
+
+      - So how do we set this up.
+            1) First we must deploy a admission webhook server.
+            2) Then we configure a webhook on kubernetes, by creating the webhook configuration object.
+ 
+</br>
+</br>
+
+#### Deploy a webhook server :
+</br>
+      ![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/242c8d48-1a9d-4012-9373-6d6607b42c61)
+
+      - Generally written on GoLang language.
+      - It must accept the mutate & validate API's and respond in the JSON object that the webserver expects.
+</br>
+</br>
+      ![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/9a6863f8-ef87-4b02-978f-4db4836688ee)
+
+      ![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/d863de0f-cf52-46f5-8c1b-dab0a62395e2)
+
+</br>
+</br>
+      ![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/122131d7-32d5-48a2-a34e-812b2657ebdc)
+
+      - Once we have developed the webhook server, next step is to host it.
+      - So we either run it as a server/containerise it within the kubernetes cluster itself as a deployment.
+      - If deployed as a deployment in the kubernetes cluster, then it needs a SVC to be accessed.
+</br>
+</br>
+      ![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/2de7a935-ab17-4425-9549-53183e8f14eb)
+</br>
+      
+      ![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/8146c8a5-29cb-4d91-850b-8085710ee559)
+
+      - The next step it to configure our cluster to reach out to the service to validate or mutate the requests.
+      - For this we create a validating configuration object.
+
+
+      
+
+
+      
+
+      
+
+
+
+
+
 
 
 
