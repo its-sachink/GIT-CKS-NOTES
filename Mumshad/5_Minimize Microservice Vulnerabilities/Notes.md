@@ -27,6 +27,7 @@
 
 ## Chapter 2 - Admission Controllers :
 </br>
+
 ![image](https://github.com/its-sachink/GIT-CKS-NOTES/assets/25415707/37d50bbe-4172-41cc-8a71-d30cd4a6dcf0)
 
 </br>
